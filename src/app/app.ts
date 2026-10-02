@@ -17,6 +17,15 @@ export class AppComponent {
   // Controle de estado para o formulário
   produtoAtual: Produto = this.novoProduto();
   modoEdicao: boolean = false;
+  formularioAberto: boolean = true;
+
+  get produtosDisponiveis(): number {
+    return this.produtos.filter(produto => produto.disponivel).length;
+  }
+
+  get produtosEsgotados(): number {
+    return this.produtos.filter(produto => !produto.disponivel).length;
+  }
 
   novoProduto(): Produto {
     return { id: 0, nome: '', dataFabricacao: new Date(), disponivel: true };
@@ -35,6 +44,7 @@ export class AppComponent {
       this.produtos.push({ ...this.produtoAtual }); // Adiciona ao final
     }
     this.produtoAtual = this.novoProduto();
+    this.formularioAberto = false;
   }
 
   // READ (Detalhar)
@@ -43,7 +53,20 @@ export class AppComponent {
     if (encontrado) {
       this.produtoAtual = { ...encontrado };
       this.modoEdicao = true;
+      this.formularioAberto = true;
     }
+  }
+
+  abrirNovoProduto(): void {
+    this.produtoAtual = this.novoProduto();
+    this.modoEdicao = false;
+    this.formularioAberto = true;
+  }
+
+  cancelarEdicao(): void {
+    this.produtoAtual = this.novoProduto();
+    this.modoEdicao = false;
+    this.formularioAberto = false;
   }
 
   // DELETE

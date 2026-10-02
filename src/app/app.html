@@ -1,107 +1,54 @@
-<main class="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
-  <div class="max-w-5xl mx-auto space-y-6">
+<main class="app-shell">
+  <aside class="sidebar">
+    <div class="brand-mark"><span>O</span><strong>Optimus</strong></div>
+    <div class="workspace-label">WORKSPACE</div>
+    <nav class="side-nav" aria-label="Navegação principal">
+      <a class="nav-item active" href="#resumo"><span class="nav-icon">⌂</span> Visão geral</a>
+      <a class="nav-item" href="#produtos"><span class="nav-icon">▦</span> Produtos <span class="nav-count">{{ produtos.length }}</span></a>
+      <a class="nav-item" href="#atividade"><span class="nav-icon">◷</span> Atividade</a>
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot"></span><span>Operação normal</span></div>
+  </aside>
 
-    <!-- Cabeçalho Principal -->
-    <header class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-900">Gerenciador de Produtos</h1>
-        <p class="text-sm text-slate-500 mt-1">Tarefa II.II - Interfaces Ricas</p>
-      </div>
-
-      @if (!modoEdicao && produtoAtual.id !== 0) {
-        <button (click)="produtoAtual = novoProduto()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
-          <!-- Ícone SVG -->
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-          Novo Produto
-        </button>
-      }
+  <section class="content-area">
+    <header class="topbar">
+      <div class="breadcrumb"><span>Workspace</span><b>/</b><strong>Visão geral</strong></div>
+      <div class="profile"><div class="profile-avatar">JR</div><div><strong>JV</strong><small>Administrador</small></div><span class="chevron">⌄</span></div>
     </header>
 
-    <!-- FORMULÁRIO -->
-    @if (modoEdicao || produtoAtual.id === 0) {
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4">
-          <h2 class="text-lg font-semibold text-slate-800">
-            {{ modoEdicao ? 'Editar Produto' : 'Cadastrar Novo Produto' }}
-          </h2>
-        </div>
+    <div class="page-content" id="resumo">
+      <div class="page-heading">
+        <div><p class="eyebrow">QUINTA-FEIRA, 02 DE OUTUBRO</p><h1>Bom dia, João <span>✦</span></h1><p class="subtitle">Acompanhe o desempenho do seu catálogo em um só lugar.</p></div>
+        <button class="primary-button" (click)="abrirNovoProduto()"><span>＋</span> Novo produto</button>
+      </div>
 
-        <div class="p-6 space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="stats-grid">
+        <article class="stat-card"><div class="stat-icon coral">▦</div><div><span>Total de produtos</span><strong>{{ produtos.length }}</strong><small>Itens no catálogo</small></div><b class="trend">↑ 12%</b></article>
+        <article class="stat-card"><div class="stat-icon green">✓</div><div><span>Disponíveis</span><strong>{{ produtosDisponiveis }}</strong><small>Prontos para venda</small></div><b class="trend">↑ 8%</b></article>
+        <article class="stat-card"><div class="stat-icon amber">!</div><div><span>Em falta</span><strong>{{ produtosEsgotados }}</strong><small>Precisam de atenção</small></div><b class="trend down">↓ 3%</b></article>
+      </div>
 
-            <div class="space-y-2 md:col-span-2">
-              <label class="text-sm font-semibold text-slate-700">Nome do Produto</label>
-              <input type="text" [(ngModel)]="produtoAtual.nome" placeholder="Ex: Teclado Mecânico" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none">
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700">Data de Fabricação</label>
-              <input type="date" [ngModel]="produtoAtual.dataFabricacao | date:'yyyy-MM-dd'" (ngModelChange)="produtoAtual.dataFabricacao = $event" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none">
-            </div>
-
-            <div class="space-y-2 flex items-center mt-6">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" [(ngModel)]="produtoAtual.disponivel" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 transition-all">
-                <span class="text-sm font-medium text-slate-700">Disponível em Estoque</span>
-              </label>
-            </div>
+      @if (formularioAberto) {
+        <section class="form-panel">
+          <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>{{ modoEdicao ? 'Editar produto' : 'Cadastrar produto' }}</h2></div><button class="close-button" (click)="cancelarEdicao()" aria-label="Fechar formulário">×</button></div>
+          <div class="form-grid">
+            <label class="field wide"><span>Nome do produto</span><input type="text" [(ngModel)]="produtoAtual.nome" placeholder="Ex.: Teclado mecânico sem fio"></label>
+            <label class="field"><span>Data de fabricação</span><input type="date" [ngModel]="produtoAtual.dataFabricacao | date:'yyyy-MM-dd'" (ngModelChange)="produtoAtual.dataFabricacao = $event"></label>
+            <label class="availability"><input type="checkbox" [(ngModel)]="produtoAtual.disponivel"><span><b>Disponível em estoque</b><small>O produto pode ser vendido agora</small></span></label>
           </div>
+          <div class="form-actions"><button class="primary-button" (click)="salvar()">{{ modoEdicao ? 'Atualizar produto' : 'Salvar produto' }}</button><button class="secondary-button" (click)="cancelarEdicao()">Cancelar</button></div>
+        </section>
+      }
 
-          <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
-            <button (click)="salvar()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition-colors shadow-sm">
-              Salvar Dados
-            </button>
-            <button (click)="produtoAtual = novoProduto(); modoEdicao = false" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-6 py-2.5 rounded-lg font-medium text-sm transition-colors">
-              Cancelar
-            </button>
-          </div>
-        </div>
+      <section class="products-panel" id="produtos">
+        <div class="section-heading"><div><p class="eyebrow">INVENTÁRIO</p><h2>Seus produtos</h2></div><button class="filter-button">Filtrar <span>⌄</span></button></div>
+        @if (produtos.length > 0) {
+          <div class="table-wrap"><table><thead><tr><th>Produto</th><th>ID</th><th>Fabricação</th><th>Status</th><th><span class="sr-only">Ações</span></th></tr></thead><tbody>@for (produto of produtos; track produto.id) {<tr><td><div class="product-name"><span class="product-avatar">{{ produto.nome.charAt(0) || '?' }}</span><b>{{ produto.nome || 'Produto sem nome' }}</b></div></td><td class="muted">#{{ produto.id.toString().slice(-5) }}</td><td class="muted">{{ produto.dataFabricacao | date:'dd/MM/yyyy' }}</td><td><span class="status-badge" [ngClass]="produto.disponivel ? 'available' : 'empty'"><i></i>{{ produto.disponivel ? 'Em estoque' : 'Esgotado' }}</span></td><td class="row-actions"><button (click)="detalhar(produto.id)" aria-label="Editar produto">Editar</button><button class="delete" (click)="remover(produto.id)" aria-label="Excluir produto">Excluir</button></td></tr>}</tbody></table></div>
+        } @else {
+          <div class="empty-state"><div class="empty-icon">▦</div><h3>Nenhum produto por aqui</h3><p>Comece adicionando o primeiro item ao seu catálogo.</p><button class="secondary-button" (click)="abrirNovoProduto()">Adicionar primeiro produto</button></div>
+        }
       </section>
-    }
-
-    <!-- TABELA -->
-    @if (!modoEdicao && produtoAtual.id !== 0) {
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500 font-semibold">
-                <th class="px-6 py-4">ID</th>
-                <th class="px-6 py-4">Nome</th>
-                <th class="px-6 py-4">Fabricação</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-
-              @for (produto of produtos; track produto.id) {
-                <tr class="hover:bg-slate-50/80 transition-colors group">
-                  <td class="px-6 py-4 text-sm font-mono text-slate-500">#{{ produto.id.toString().slice(-4) }}</td>
-                  <td class="px-6 py-4 text-sm font-medium text-slate-900">{{ produto.nome }}</td>
-                  <td class="px-6 py-4 text-sm text-slate-600">{{ produto.dataFabricacao | date:'dd/MM/yyyy' }}</td>
-                  <td class="px-6 py-4">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full border" [ngClass]="produto.disponivel ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'">
-                      {{ produto.disponivel ? 'Em Estoque' : 'Esgotado' }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-right space-x-3">
-                    <button (click)="detalhar(produto.id)" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">Editar</button>
-                    <button (click)="remover(produto.id)" class="text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors">Excluir</button>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="5" class="px-6 py-12 text-center text-slate-500">
-                    <p class="text-sm">Nenhum produto cadastrado.</p>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </section>
-    }
-
-  </div>
+      <footer class="page-footer"><span>Optimus Inventory</span><span>Dados armazenados localmente</span></footer>
+    </div>
+  </section>
 </main>
