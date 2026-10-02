@@ -16,13 +16,13 @@
       <div class="profile"><div class="profile-avatar">JR</div><div><strong>JV</strong><small>Administrador</small></div><span class="chevron">⌄</span></div>
     </header>
 
-    <div class="page-content" id="resumo">
+    <div class="page-content mx-auto max-w-6xl" id="resumo">
       <div class="page-heading">
         <div><p class="eyebrow">QUINTA-FEIRA, 02 DE OUTUBRO</p><h1>Bom dia, João <span>✦</span></h1><p class="subtitle">Acompanhe o desempenho do seu catálogo em um só lugar.</p></div>
-        <button class="primary-button" (click)="abrirNovoProduto()"><span>＋</span> Novo produto</button>
+        <p-button class="primary-button" icon="pi pi-plus" label="Novo produto" (onClick)="abrirNovoProduto()" />
       </div>
 
-      <div class="stats-grid">
+      <div class="stats-grid grid gap-4">
         <article class="stat-card"><div class="stat-icon coral">▦</div><div><span>Total de produtos</span><strong>{{ produtos.length }}</strong><small>Itens no catálogo</small></div><b class="trend">↑ 12%</b></article>
         <article class="stat-card"><div class="stat-icon green">✓</div><div><span>Disponíveis</span><strong>{{ produtosDisponiveis }}</strong><small>Prontos para venda</small></div><b class="trend">↑ 8%</b></article>
         <article class="stat-card"><div class="stat-icon amber">!</div><div><span>Em falta</span><strong>{{ produtosEsgotados }}</strong><small>Precisam de atenção</small></div><b class="trend down">↓ 3%</b></article>
@@ -32,18 +32,18 @@
         <section class="form-panel">
           <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>{{ modoEdicao ? 'Editar produto' : 'Cadastrar produto' }}</h2></div><button class="close-button" (click)="cancelarEdicao()" aria-label="Fechar formulário">×</button></div>
           <div class="form-grid">
-            <label class="field wide"><span>Nome do produto</span><input type="text" [(ngModel)]="produtoAtual.nome" placeholder="Ex.: Teclado mecânico sem fio"></label>
-            <label class="field"><span>Data de fabricação</span><input type="date" [ngModel]="produtoAtual.dataFabricacao | date:'yyyy-MM-dd'" (ngModelChange)="produtoAtual.dataFabricacao = $event"></label>
-            <label class="availability"><input type="checkbox" [(ngModel)]="produtoAtual.disponivel"><span><b>Disponível em estoque</b><small>O produto pode ser vendido agora</small></span></label>
+            <label class="field wide"><span>Nome do produto</span><input pInputText type="text" [(ngModel)]="produtoAtual.nome" placeholder="Ex.: Teclado mecânico sem fio"></label>
+            <label class="field"><span>Data de fabricação</span><input pInputText type="date" [ngModel]="produtoAtual.dataFabricacao | date:'yyyy-MM-dd'" (ngModelChange)="produtoAtual.dataFabricacao = $event"></label>
+            <label class="availability"><p-checkbox [(ngModel)]="produtoAtual.disponivel" [binary]="true" inputId="disponivel"></p-checkbox><span><b>Disponível em estoque</b><small>O produto pode ser vendido agora</small></span></label>
           </div>
-          <div class="form-actions"><button class="primary-button" (click)="salvar()">{{ modoEdicao ? 'Atualizar produto' : 'Salvar produto' }}</button><button class="secondary-button" (click)="cancelarEdicao()">Cancelar</button></div>
+          <div class="form-actions"><p-button class="primary-button" [label]="modoEdicao ? 'Atualizar produto' : 'Salvar produto'" (onClick)="salvar()" /><p-button class="secondary-button" label="Cancelar" [outlined]="true" (onClick)="cancelarEdicao()" /></div>
         </section>
       }
 
       <section class="products-panel" id="produtos">
         <div class="section-heading"><div><p class="eyebrow">INVENTÁRIO</p><h2>Seus produtos</h2></div><button class="filter-button">Filtrar <span>⌄</span></button></div>
         @if (produtos.length > 0) {
-          <div class="table-wrap"><table><thead><tr><th>Produto</th><th>ID</th><th>Fabricação</th><th>Status</th><th><span class="sr-only">Ações</span></th></tr></thead><tbody>@for (produto of produtos; track produto.id) {<tr><td><div class="product-name"><span class="product-avatar">{{ produto.nome.charAt(0) || '?' }}</span><b>{{ produto.nome || 'Produto sem nome' }}</b></div></td><td class="muted">#{{ produto.id.toString().slice(-5) }}</td><td class="muted">{{ produto.dataFabricacao | date:'dd/MM/yyyy' }}</td><td><span class="status-badge" [ngClass]="produto.disponivel ? 'available' : 'empty'"><i></i>{{ produto.disponivel ? 'Em estoque' : 'Esgotado' }}</span></td><td class="row-actions"><button (click)="detalhar(produto.id)" aria-label="Editar produto">Editar</button><button class="delete" (click)="remover(produto.id)" aria-label="Excluir produto">Excluir</button></td></tr>}</tbody></table></div>
+          <div class="table-wrap overflow-x-auto"><table><thead><tr><th>Produto</th><th>ID</th><th>Fabricação</th><th>Status</th><th><span class="sr-only">Ações</span></th></tr></thead><tbody>@for (produto of produtos; track produto.id) {<tr><td><div class="product-name"><span class="product-avatar">{{ produto.nome.charAt(0) || '?' }}</span><b>{{ produto.nome || 'Produto sem nome' }}</b></div></td><td class="muted">#{{ produto.id.toString().slice(-5) }}</td><td class="muted">{{ produto.dataFabricacao | date:'dd/MM/yyyy' }}</td><td><p-tag [value]="produto.disponivel ? 'Em estoque' : 'Esgotado'" [severity]="produto.disponivel ? 'success' : 'warn'" [rounded]="true" /></td><td class="row-actions"><button (click)="detalhar(produto.id)" aria-label="Editar produto">Editar</button><button class="delete" (click)="remover(produto.id)" aria-label="Excluir produto">Excluir</button></td></tr>}</tbody></table></div>
         } @else {
           <div class="empty-state"><div class="empty-icon">▦</div><h3>Nenhum produto por aqui</h3><p>Comece adicionando o primeiro item ao seu catálogo.</p><button class="secondary-button" (click)="abrirNovoProduto()">Adicionar primeiro produto</button></div>
         }

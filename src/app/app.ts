@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { CheckboxModule } from '@openng/optimus-ui/checkbox';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { TagModule } from '@openng/optimus-ui/tag';
 import { Produto } from './models/produto';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonModule, CheckboxModule, InputTextModule, TagModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
