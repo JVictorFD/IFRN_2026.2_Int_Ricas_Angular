@@ -32,7 +32,7 @@ export class AppComponent {
   }
 
   novoProduto(): Produto {
-    return { id: 0, nome: '', dataFabricacao: new Date(), disponivel: true };
+    return { id: 0, nome: '', quantidade: 0, dataFabricacao: new Date(), disponivel: true };
   }
 
   // CREATE / UPDATE
