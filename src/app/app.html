@@ -1,55 +1,86 @@
-<main class="app-shell">
-  <aside class="sidebar">
-    <div class="brand-mark"><span>O</span><strong>Optimus</strong></div>
-    <div class="workspace-label">WORKSPACE</div>
-    <nav class="side-nav" aria-label="Navegação principal">
-      <a class="nav-item active" href="#resumo"><span class="nav-icon">⌂</span> Visão geral</a>
-      <a class="nav-item" href="#produtos"><span class="nav-icon">▦</span> Produtos <span class="nav-count">{{ produtos.length }}</span></a>
-      <a class="nav-item" href="#atividade"><span class="nav-icon">◷</span> Atividade</a>
-    </nav>
-    <div class="sidebar-footer"><span class="status-dot"></span><span>Operação normal</span></div>
-  </aside>
-
-  <section class="content-area">
-    <header class="topbar">
-      <div class="breadcrumb"><span>Workspace</span><b>/</b><strong>Visão geral</strong></div>
-      <div class="profile"><div class="profile-avatar">JR</div><div><strong>JV</strong><small>Administrador</small></div><span class="chevron">⌄</span></div>
-    </header>
-
-    <div class="page-content mx-auto max-w-6xl" id="resumo">
-      <div class="page-heading">
-        <div><p class="eyebrow">QUINTA-FEIRA, 02 DE OUTUBRO</p><h1>Bom dia, João <span>✦</span></h1><p class="subtitle">Acompanhe o desempenho do seu catálogo em um só lugar.</p></div>
-        <p-button class="primary-button" icon="pi pi-plus" label="Novo produto" (onClick)="abrirNovoProduto()" />
+@if (authService.isAuthenticated()) {
+  <main class="min-h-screen flex bg-[#f7f8fa]">
+    <aside class="w-20 md:w-60 px-3 md:px-5 py-7 bg-[#17212f] text-slate-300 flex flex-col shrink-0">
+      <div class="flex items-center justify-center md:justify-start gap-2.5 text-white text-lg font-bold px-2 pb-10">
+        <span class="grid place-items-center w-8 h-8 rounded-lg bg-[#f4a261] text-[#17212f] font-extrabold text-base">
+          O
+        </span>
+        <strong class="hidden md:inline tracking-tight">Optimus</strong>
       </div>
 
-      <div class="stats-grid grid gap-4">
-        <article class="stat-card"><div class="stat-icon coral">▦</div><div><span>Total de produtos</span><strong>{{ produtos.length }}</strong><small>Itens no catálogo</small></div><b class="trend">↑ 12%</b></article>
-        <article class="stat-card"><div class="stat-icon green">✓</div><div><span>Disponíveis</span><strong>{{ produtosDisponiveis }}</strong><small>Prontos para venda</small></div><b class="trend">↑ 8%</b></article>
-        <article class="stat-card"><div class="stat-icon amber">!</div><div><span>Em falta</span><strong>{{ produtosEsgotados }}</strong><small>Precisam de atenção</small></div><b class="trend down">↓ 3%</b></article>
+      <div class="hidden md:block text-[10px] font-bold tracking-[1.4px] text-slate-400 px-3 pb-3">
+        WORKSPACE
       </div>
 
-      @if (formularioAberto) {
-        <section class="form-panel">
-          <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>{{ modoEdicao ? 'Editar produto' : 'Cadastrar produto' }}</h2></div><button class="close-button" (click)="cancelarEdicao()" aria-label="Fechar formulário">×</button></div>
-          <div class="form-grid">
-            <label class="field wide"><span>Nome do produto</span><input pInputText type="text" [(ngModel)]="produtoAtual.nome" placeholder="Ex.: Teclado mecânico sem fio"></label>
-            <label class="field"><span>Quantidade</span><input pInputText type="number" min="0" [(ngModel)]="produtoAtual.quantidade" placeholder="Ex.: 25"></label>
-            <label class="field"><span>Data de fabricação</span><input pInputText type="date" [ngModel]="produtoAtual.dataFabricacao | date:'yyyy-MM-dd'" (ngModelChange)="produtoAtual.dataFabricacao = $event"></label>
-            <label class="availability"><p-checkbox [(ngModel)]="produtoAtual.disponivel" [binary]="true" inputId="disponivel"></p-checkbox><span><b>Disponível em estoque</b><small>O produto pode ser vendido agora</small></span></label>
+      <nav class="grid gap-1.5" aria-label="Navegação principal">
+        <a
+          routerLink="/produtos"
+          routerLinkActive="bg-[#263449] text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center justify-center md:justify-start gap-3 min-h-11 px-3 rounded-lg text-slate-300 hover:bg-[#263449] hover:text-white text-xs font-medium no-underline transition"
+        >
+          <span class="text-base">▤</span>
+          <span class="hidden md:inline">Produtos</span>
+          <span class="hidden md:inline ml-auto px-2 py-0.5 rounded-full bg-[#33445d] text-slate-200 text-[11px]">
+            {{ produtoService.totalProdutos() }}
+          </span>
+        </a>
+
+        <a
+          routerLink="/produtos/novo"
+          routerLinkActive="bg-[#263449] text-white"
+          class="flex items-center justify-center md:justify-start gap-3 min-h-11 px-3 rounded-lg text-slate-300 hover:bg-[#263449] hover:text-white text-xs font-medium no-underline transition"
+        >
+          <span class="text-base">＋</span>
+          <span class="hidden md:inline">Novo produto</span>
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-4 border-t border-slate-700/70 flex items-center justify-center md:justify-start gap-2 px-2 text-[11px] text-slate-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="hidden md:inline">API conectada (JWT)</span>
+      </div>
+    </aside>
+
+    <section class="flex-1 min-w-0 flex flex-col">
+      <header class="h-18 px-6 md:px-10 flex items-center justify-between border-b border-slate-200 bg-white">
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+          <span>Workspace</span>
+          <span>/</span>
+          <strong class="text-slate-700 font-semibold">Gestão de Produtos</strong>
+        </div>
+
+        <div class="flex items-center gap-4 ml-auto">
+          <div class="flex items-center gap-2.5 text-xs">
+            <div class="grid place-items-center w-9 h-9 rounded-full bg-[#f7c9a9] text-[#71432f] font-bold">
+              {{ iniciaisUsuario() }}
+            </div>
+            <div class="hidden sm:block">
+              <strong class="block text-slate-700">{{ authService.usuario()?.nome }}</strong>
+              <small class="block text-[10px] text-slate-400">{{ authService.usuario()?.perfil }}</small>
+            </div>
           </div>
-          <div class="form-actions"><p-button class="primary-button" [label]="modoEdicao ? 'Atualizar produto' : 'Salvar produto'" (onClick)="salvar()" /><p-button class="secondary-button" label="Cancelar" [outlined]="true" (onClick)="cancelarEdicao()" /></div>
-        </section>
-      }
 
-      <section class="products-panel" id="produtos">
-        <div class="section-heading"><div><p class="eyebrow">INVENTÁRIO</p><h2>Seus produtos</h2></div><button class="filter-button">Filtrar <span>⌄</span></button></div>
-        @if (produtos.length > 0) {
-          <div class="table-wrap overflow-x-auto"><table><thead><tr><th>Produto</th><th>ID</th><th>Quantidade</th><th>Fabricação</th><th>Status</th><th><span class="sr-only">Ações</span></th></tr></thead><tbody>@for (produto of produtos; track produto.id) {<tr><td><div class="product-name"><span class="product-avatar">{{ produto.nome.charAt(0) || '?' }}</span><b>{{ produto.nome || 'Produto sem nome' }}</b></div></td><td class="muted">#{{ produto.id.toString().slice(-5) }}</td><td class="muted">{{ produto.quantidade }}</td><td class="muted">{{ produto.dataFabricacao | date:'dd/MM/yyyy' }}</td><td><p-tag [value]="produto.disponivel ? 'Em estoque' : 'Esgotado'" [severity]="produto.disponivel ? 'success' : 'warn'" [rounded]="true" /></td><td class="row-actions"><button (click)="detalhar(produto.id)" aria-label="Editar produto">Editar</button><button class="delete" (click)="remover(produto.id)" aria-label="Excluir produto">Excluir</button></td></tr>}</tbody></table></div>
-        } @else {
-          <div class="empty-state"><div class="empty-icon">▦</div><h3>Nenhum produto por aqui</h3><p>Comece adicionando o primeiro item ao seu catálogo.</p><button class="secondary-button" (click)="abrirNovoProduto()">Adicionar primeiro produto</button></div>
-        }
-      </section>
-      <footer class="page-footer"><span>Optimus Inventory</span><span>Dados armazenados localmente</span></footer>
-    </div>
-  </section>
-</main>
+          <p-button
+            label="Sair"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="sair()"
+            styleClass="!text-xs !px-3 !py-1.5 !rounded-lg"
+          />
+        </div>
+      </header>
+
+      <div class="flex-1 w-full max-w-6xl mx-auto px-5 md:px-10 py-8">
+        <router-outlet />
+      </div>
+
+      <footer class="max-w-6xl w-full mx-auto px-5 md:px-10 py-4 flex justify-between text-[11px] text-slate-400">
+        <span>Optimus Inventory · Angular 22 + OptimusUI 2 + Tailwind 4</span>
+        <span>Backend REST + Autenticação JWT</span>
+      </footer>
+    </section>
+  </main>
+} @else {
+  <router-outlet />
+}

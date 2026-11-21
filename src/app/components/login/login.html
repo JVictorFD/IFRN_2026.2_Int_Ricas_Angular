@@ -1,0 +1,71 @@
+<div class="min-h-screen flex items-center justify-center bg-[#17212f] px-4 py-10">
+  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl border border-slate-200">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="grid place-items-center w-10 h-10 rounded-xl bg-[#f4a261] text-[#17212f] font-extrabold text-xl">
+        O
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-[#17212f] tracking-tight m-0">Optimus Inventory</h1>
+        <p class="text-xs text-slate-500 m-0">Acesso protegido com autenticação JWT</p>
+      </div>
+    </div>
+
+    <div class="mb-6 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-900">
+      <strong class="block mb-1">Credenciais de demonstração:</strong>
+      E-mail: <code class="font-mono font-semibold">admin@optimus.com</code> · Senha: <code class="font-mono font-semibold">123456</code>
+    </div>
+
+    @if (erroLogin()) {
+      <div class="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-xs font-medium text-red-700">
+        {{ erroLogin() }}
+      </div>
+    }
+
+    <form (submit)="onSubmit($event)" class="space-y-5">
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-xs font-bold text-slate-600 uppercase tracking-wide">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          [formField]="loginForm.email"
+          placeholder="admin@optimus.com"
+          class="w-full !px-3.5 !py-2.5 !text-sm !rounded-lg"
+        />
+        @if (loginForm.email().touched() && loginForm.email().invalid()) {
+          <ul class="m-0 pl-4 text-xs text-red-600 space-y-0.5">
+            @for (error of loginForm.email().errors(); track error) {
+              <li>{{ error.message }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="password" class="text-xs font-bold text-slate-600 uppercase tracking-wide">Senha</label>
+        <input
+          id="password"
+          type="password"
+          pInputText
+          [formField]="loginForm.password"
+          placeholder="Digite sua senha"
+          class="w-full !px-3.5 !py-2.5 !text-sm !rounded-lg"
+        />
+        @if (loginForm.password().touched() && loginForm.password().invalid()) {
+          <ul class="m-0 pl-4 text-xs text-red-600 space-y-0.5">
+            @for (error of loginForm.password().errors(); track error) {
+              <li>{{ error.message }}</li>
+            }
+          </ul>
+        }
+      </div>
+
+      <p-button
+        type="submit"
+        [label]="enviando() ? 'Entrando...' : 'Entrar no sistema'"
+        [disabled]="!loginForm().valid() || enviando()"
+        styleClass="w-full !bg-[#e97850] !border-[#e97850] hover:!bg-[#d96742] !font-bold !py-2.5 !rounded-lg"
+      />
+    </form>
+  </div>
+</div>

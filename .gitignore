@@ -43,3 +43,6 @@ repo_all.txt
 # System files
 .DS_Store
 Thumbs.db
+
+# Backend
+/backend/node_modules

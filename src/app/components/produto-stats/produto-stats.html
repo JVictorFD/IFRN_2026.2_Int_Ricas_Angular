@@ -1,0 +1,74 @@
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+  <div>
+    <p class="text-[10px] font-bold tracking-[1.4px] uppercase text-slate-400 m-0">PAINEL DE INVENTÁRIO</p>
+    <h1 class="text-2xl sm:text-3xl font-bold text-[#17212f] tracking-tight mt-1 mb-1">
+      Catálogo de Produtos <span class="text-[#f4a261]">✦</span>
+    </h1>
+    <p class="text-sm text-slate-500 m-0">Clique nos cartões abaixo para filtrar o estoque em tempo real.</p>
+  </div>
+
+  <p-button
+    label="+ Novo produto"
+    (onClick)="novoProduto.emit()"
+    styleClass="!bg-[#e97850] !border-[#e97850] hover:!bg-[#d96742] !text-white !font-bold !text-xs !px-4 !py-3 !rounded-lg shadow-sm"
+  />
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <button
+    type="button"
+    (click)="selecionarFiltro('todos')"
+    class="text-left flex items-center gap-4 p-5 rounded-xl border bg-white transition cursor-pointer"
+    [class.border-[#e97850]]="filtroAtivo() === 'todos'"
+    [class.ring-2]="filtroAtivo() === 'todos'"
+    [class.ring-[#e97850]/20]="filtroAtivo() === 'todos'"
+    [class.border-slate-200]="filtroAtivo() !== 'todos'"
+  >
+    <div class="grid place-items-center w-11 h-11 rounded-xl bg-[#fff0e9] text-[#e97850] font-bold text-lg">
+      ▤
+    </div>
+    <div>
+      <span class="block text-xs text-slate-500">Total de produtos</span>
+      <strong class="block text-2xl font-bold text-[#253244] my-0.5">{{ total() }}</strong>
+      <small class="text-[11px] text-slate-400">Itens no catálogo</small>
+    </div>
+  </button>
+
+  <button
+    type="button"
+    (click)="selecionarFiltro('disponiveis')"
+    class="text-left flex items-center gap-4 p-5 rounded-xl border bg-white transition cursor-pointer"
+    [class.border-emerald-500]="filtroAtivo() === 'disponiveis'"
+    [class.ring-2]="filtroAtivo() === 'disponiveis'"
+    [class.ring-emerald-500/20]="filtroAtivo() === 'disponiveis'"
+    [class.border-slate-200]="filtroAtivo() !== 'disponiveis'"
+  >
+    <div class="grid place-items-center w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 font-bold text-lg">
+      ✓
+    </div>
+    <div>
+      <span class="block text-xs text-slate-500">Disponíveis</span>
+      <strong class="block text-2xl font-bold text-[#253244] my-0.5">{{ disponiveis() }}</strong>
+      <small class="text-[11px] text-slate-400">Prontos para venda</small>
+    </div>
+  </button>
+
+  <button
+    type="button"
+    (click)="selecionarFiltro('esgotados')"
+    class="text-left flex items-center gap-4 p-5 rounded-xl border bg-white transition cursor-pointer"
+    [class.border-amber-500]="filtroAtivo() === 'esgotados'"
+    [class.ring-2]="filtroAtivo() === 'esgotados'"
+    [class.ring-amber-500/20]="filtroAtivo() === 'esgotados'"
+    [class.border-slate-200]="filtroAtivo() !== 'esgotados'"
+  >
+    <div class="grid place-items-center w-11 h-11 rounded-xl bg-amber-50 text-amber-600 font-bold text-lg">
+      !
+    </div>
+    <div>
+      <span class="block text-xs text-slate-500">Em falta</span>
+      <strong class="block text-2xl font-bold text-[#253244] my-0.5">{{ esgotados() }}</strong>
+      <small class="text-[11px] text-slate-400">Precisam de reposição</small>
+    </div>
+  </button>
+</div>

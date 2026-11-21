@@ -1,80 +1,31 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { CheckboxModule } from '@openng/optimus-ui/checkbox';
-import { InputTextModule } from '@openng/optimus-ui/inputtext';
-import { TagModule } from '@openng/optimus-ui/tag';
-import { Produto } from './models/produto';
+import { AuthService } from './services/auth.service';
+import { ProdutoService } from './services/produto.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, CheckboxModule, InputTextModule, TagModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ButtonModule],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
 })
 export class AppComponent {
-  // Array que armazenará os dados em memória
-  produtos: Produto[] = [];
-  
-  // Controle de estado para o formulário
-  produtoAtual: Produto = this.novoProduto();
-  modoEdicao: boolean = false;
-  formularioAberto: boolean = true;
+  readonly authService = inject(AuthService);
+  readonly produtoService = inject(ProdutoService);
 
-  get produtosDisponiveis(): number {
-    return this.produtos.filter(produto => produto.disponivel).length;
-  }
+  readonly iniciaisUsuario = computed(() => {
+    const nome = this.authService.usuario()?.nome ?? 'US';
+    return nome
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((parte) => parte[0].toUpperCase())
+      .join('');
+  });
 
-  get produtosEsgotados(): number {
-    return this.produtos.filter(produto => !produto.disponivel).length;
-  }
-
-  novoProduto(): Produto {
-    return { id: 0, nome: '', quantidade: 0, dataFabricacao: new Date(), disponivel: true };
-  }
-
-  // CREATE / UPDATE
-  salvar(): void {
-    if (this.modoEdicao) {
-      const index = this.produtos.findIndex(p => p.id === this.produtoAtual.id);
-      if (index !== -1) {
-        this.produtos[index] = { ...this.produtoAtual };
-      }
-      this.modoEdicao = false;
-    } else {
-      this.produtoAtual.id = new Date().getTime(); // ID gerado na hora
-      this.produtos.push({ ...this.produtoAtual }); // Adiciona ao final
-    }
-    this.produtoAtual = this.novoProduto();
-    this.formularioAberto = false;
-  }
-
-  // READ (Detalhar)
-  detalhar(id: number): void {
-    const encontrado = this.produtos.find(p => p.id === id); 
-    if (encontrado) {
-      this.produtoAtual = { ...encontrado };
-      this.modoEdicao = true;
-      this.formularioAberto = true;
-    }
-  }
-
-  abrirNovoProduto(): void {
-    this.produtoAtual = this.novoProduto();
-    this.modoEdicao = false;
-    this.formularioAberto = true;
-  }
-
-  cancelarEdicao(): void {
-    this.produtoAtual = this.novoProduto();
-    this.modoEdicao = false;
-    this.formularioAberto = false;
-  }
-
-  // DELETE
-  remover(id: number): void {
-    this.produtos = this.produtos.filter(p => p.id !== id); 
+  sair(): void {
+    this.authService.logout();
   }
 }
