@@ -73,11 +73,11 @@ Aplicação web desenvolvida com **Angular 22**, **OptimusUI 2** e **Tailwind CS
 
 ## Como executar
 
-1. Instale as dependências do frontend e do backend:
+## 1. Instale as dependências do frontend e do backend:
 ```bash
 npm install
 npm --prefix backend install
-
+```
 ---
 
 ## 2. Checklist de testes antes do commit
@@ -95,3 +95,4 @@ Faça um teste rápido clicando em tudo na aba da porta `4200` para garantir que
 6. **Proteção do Backend (prova do JWT):** Rode no terminal:
    ```bash
    curl -i http://localhost:3000/api/produtos
+   ```
