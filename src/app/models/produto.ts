@@ -2,6 +2,6 @@ export interface Produto {
   id: number;
   nome: string;
   quantidade: number;
-  dataFabricacao: string;
+  dataFabricacao: Date | string;
   disponivel: boolean;
 }
